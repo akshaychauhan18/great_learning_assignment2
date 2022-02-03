@@ -32,52 +32,69 @@ clicks = [
   { "ip": "55.55.55.55", "timestamp": "3/11/2020 18:19:20", "amount": 9.00 },
   { "ip": "22.22.22.22", "timestamp": "3/11/2020 23:59:59", "amount": 9.00 },
 ]
+# clicks = require "./clicks.json"
 
-class Temp
-  def click_method(clicked_items)
-    freq = Hash.new { 0 }
-    clicked_items.each do |element|
-      freq[element[:ip]] += 1
-    end
-    removed_freq = []
-    clicked_items.each do |element|
-      if freq[element[:ip]] <= 10
-        removed_freq.push(element)
-      end
-    end
-    sorted_click = removed_freq.sort { |a, b| a[:ip] <=> b[:ip] }
+require "./rmv"
+require "./sort"
+require "./result"
 
-    acc = []
+# tempObj = Remove.new
 
-    sorted_click.each do |curr|
-      if acc.length == 0
-        acc.push(curr)
-      else
-        temp = acc[acc.length - 1]
-        if temp[:ip] == curr[:ip]
-          temp_time = temp[:timestamp].to_s.split(" ")[1].split(":")[0]
-          curr_time = curr[:timestamp].to_s.split(" ")[1].split(":")[0]
+# puts tempObj.remove_func(clicks)
+removed_freq = Remove.remove_func(clicks)
 
-          if temp_time == curr_time && temp[:amount] == curr[:amount]
-            i = 0
-          elsif temp_time != curr_time
-            acc.push(curr)
-          elsif temp_time == curr_time && temp[:amount] > curr[:amount]
-            i = 0
-          elsif temp_time == curr_time && temp[:amount] < curr[:amount]
-            acc.pop()
-            acc.push(curr)
-          else
-            acc.push(curr)
-          end
-        else
-          acc.push(curr)
-        end
-      end
-    end
-    return acc.sort! { |a, b| a[:timestamp].to_s.split(" ")[1].split(":")[0] <=> b[:timestamp].to_s.split(" ")[1].split(":")[0] }
-  end
-end
+sorted_arr = SortModule.sort(removed_freq)
 
-ans = Temp.new
-puts ans.click_method(clicks)
+puts Result.ans(sorted_arr)
+
+# puts removed_freq
+
+# class Ip_data
+#   def click_method(clicked_items)
+#     freq = Hash.new { 0 }
+#     clicked_items.each do |element|
+#       freq[element[:ip]] += 1
+#     end
+#     removed_freq = []
+#     clicked_items.each do |element|
+#       if freq[element[:ip]] <= 10
+#         removed_freq.push(element)
+#       end
+#     end
+
+#     sorted_click = removed_freq.sort { |a, b| a[:ip] <=> b[:ip] }
+
+#     acc = []
+
+#     sorted_click.each do |curr|
+#       if acc.length == 0
+#         acc.push(curr)
+#       else
+#         temp = acc[acc.length - 1]
+#         if temp[:ip] == curr[:ip]
+#           temp_time = temp[:timestamp].to_s.split(" ")[1].split(":")[0]
+#           curr_time = curr[:timestamp].to_s.split(" ")[1].split(":")[0]
+
+#           if temp_time == curr_time && temp[:amount] == curr[:amount]
+#             i = 0
+#           elsif temp_time != curr_time
+#             acc.push(curr)
+#           elsif temp_time == curr_time && temp[:amount] > curr[:amount]
+#             i = 0
+#           elsif temp_time == curr_time && temp[:amount] < curr[:amount]
+#             acc.pop()
+#             acc.push(curr)
+#           else
+#             acc.push(curr)
+#           end
+#         else
+#           acc.push(curr)
+#         end
+#       end
+#     end
+#     return acc.sort! { |a, b| a[:timestamp].to_s.split(" ")[1].split(":")[0] <=> b[:timestamp].to_s.split(" ")[1].split(":")[0] }
+#   end
+# end
+
+# ans = Ip_data.new
+# puts ans.click_method(clicks)
